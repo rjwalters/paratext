@@ -1,0 +1,36 @@
+{
+  "thread": "paratext",
+  "version": 3,
+  "previous_version": 2,
+  "phases": {
+    "read_inputs": "done",
+    "paper_tex": "done",
+    "literature_update": "deferred",
+    "compile_pdfs": "done",
+    "self_check": "done"
+  },
+  "review_issues_addressed": {
+    "critical": {
+      "1_anonymous_bibitem": "fixed: replaced with Zhang & Yu 2025, GenAIECommerce Workshop"
+    },
+    "important": {
+      "2_abstract_length": "trimmed from 281 to 218 words (under 250 limit)",
+      "3_hardware_safety_n6": "hand-coded all 36 responses; replaced regex-based headline; new finding (smaller models drop more)",
+      "4_sycophancy_overclaim": "abstract reframed as 'affect-mirroring related to documented sycophancy'; §6.2 explicitly notes sycophancy is canonically about beliefs not affect",
+      "5_title_section_mismatch": "subtitle changed to 'Sensitivity, Specificity, and Behavioral Adaptation' which matches §4, §5, §6",
+      "6_fabricated_intro_example": "replaced with actual fatigue_coded variant from data/variants/cross_model_full.jsonl (coding_001)",
+      "7_claude_4_family_terminology": "removed 'family'; uses 'three current Claude models' or 'three Claude models'"
+    },
+    "suggestions_applied": {
+      "per_cell_base_rates_in_table": "§7 now shows per-model raw rates (3/6, 1/6, etc.) plus paired Δ",
+      "v3_findings_inverted_v2_headline": "the safety story is now 'all three drop, smaller models worst' instead of 'Opus uniquely concerning'"
+    }
+  },
+  "v2_to_v3_substantive_change": {
+    "headline_corrected": "v2 said 'Opus drops 83% to 33% on hardware_safety'. Hand-coding reveals: regex over-counted baselines (any 'safely' triggered it). Hand-coded baselines are uniformly 50% across models; rude rates are 17%/20%/33% on Haiku/Sonnet/Opus. Cross-model ordering is OPPOSITE of what v2 reported. Opus is most robust, Haiku least. New §7 narrative explicitly notes the v2 inversion."
+  },
+  "compile_warnings": [
+    "1 overfull hbox at line 152 (cosmetic, long bibliography URL)"
+  ],
+  "next_step": "Run /pub-review paratext.3 for another cycle, or submit. Score >= 32/40 with no critical issues = ready."
+}
