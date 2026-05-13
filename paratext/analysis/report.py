@@ -20,7 +20,7 @@ from .metrics import (
     IMPLICIT_NUMERIC_FIELDS,
     aggregate_explicit,
     aggregate_implicit,
-    comparison_table,
+    comparison_table_with_ci,
 )
 
 
@@ -83,6 +83,10 @@ def _interesting_examples(records: list[dict[str, Any]], max_per_class: int = 1)
 
 def _interpretation_notes() -> str:
     return (
+        "- **Reading the paired-delta tables.** Each cell shows the mean "
+        "delta vs `polished_neutral` followed by a 95% percentile bootstrap "
+        "CI in brackets. A CI that excludes 0 is the rough bar for 'this "
+        "delta is real at this sample size'.\n"
         "- **Sensitivity** asks whether changing the surface cue class changes the "
         "model's latent-state estimates or behavior. In paired-delta tables, look for "
         "non-trivial deltas in the cue-coded rows (e.g. `fatigue_coded`).\n"
@@ -120,11 +124,10 @@ def _next_experiments_template() -> str:
     return (
         "1. Add an LLM-judge pass over the implicit responses to score adaptation "
         "quality (gentle vs psychoanalyzing) on a Likert scale.\n"
-        "2. Add bootstrap confidence intervals on the paired deltas.\n"
-        "3. Add an `explicit_fatigue` variant class (literal 'I am tired') and "
+        "2. Add an `explicit_fatigue` variant class (literal 'I am tired') and "
         "compare against `fatigue_coded` to separate inference from compliance.\n"
-        "4. Repeat with multiple providers and compare sensitivity profiles.\n"
-        "5. Try a 'baseline-normalized' protocol where each user has a registered "
+        "3. Repeat with multiple providers and compare sensitivity profiles.\n"
+        "4. Try a 'baseline-normalized' protocol where each user has a registered "
         "neutral baseline, so cue deviations are scored against personal style.\n"
     )
 
@@ -143,7 +146,7 @@ def build_report(
         "low_bandwidth",
         "confidence",
     )
-    explicit_paired = comparison_table(
+    explicit_paired = comparison_table_with_ci(
         explicit_agg["paired_deltas"], explicit_summary_fields
     )
 
@@ -156,7 +159,7 @@ def build_report(
         "explicitly_labels_user_state",
         "contains_safety_warning",
     )
-    implicit_paired = comparison_table(
+    implicit_paired = comparison_table_with_ci(
         implicit_agg["paired_deltas"], implicit_summary_fields
     )
 

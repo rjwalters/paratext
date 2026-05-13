@@ -39,6 +39,31 @@ def _model_supports_sampling_params(model: str) -> bool:
     return "opus-4-7" not in model.lower()
 
 
+def _thinking_param_for(model: str, requested: bool) -> dict[str, Any] | None:
+    """Pick the right `thinking` payload per model when the caller asks for it.
+
+    - Opus 4.7: adaptive only (manual mode 400s).
+    - Sonnet 4.6 / Opus 4.6: adaptive recommended; manual deprecated.
+    - Haiku 4.5: adaptive support is undocumented; we still try adaptive first
+      because we want consistent behavior across the family, and fall back to
+      manual at the call site if Anthropic returns 400.
+
+    Returns the request payload, or None if thinking was not requested.
+    """
+    if not requested:
+        return None
+    return {"type": "adaptive"}
+
+
+def _thinking_manual_fallback() -> dict[str, Any]:
+    """Manual-mode thinking payload used as a fallback when adaptive 400s.
+
+    Budget chosen to be modest (5k) — enough for inference-style tasks
+    without ballooning Haiku's output.
+    """
+    return {"type": "enabled", "budget_tokens": 5000}
+
+
 def _split_system_and_messages(
     messages: list[dict[str, str]],
 ) -> tuple[str | None, list[dict[str, str]]]:
@@ -84,18 +109,21 @@ class AnthropicProvider:
         seed: int | None = None,  # ignored — Anthropic API does not support it
         max_tokens: int | None = None,
         response_format: str | None = None,  # ignored — see module docstring
+        thinking: bool = False,
         **kwargs: Any,
     ) -> ModelResponse:
         system_text, anthropic_messages = _split_system_and_messages(messages)
 
+        # With adaptive thinking on, the model may consume thousands of output
+        # tokens on the reasoning before producing the final response. Bump
+        # the default ceiling so we don't truncate.
+        default_max = 8192 if thinking else 4096
+
         request: dict[str, Any] = {
             "model": model,
             "messages": anthropic_messages,
-            # max_tokens is required by the Anthropic API. 4096 is plenty for
-            # the explicit-state JSON output (~500 tokens) and reasonable for
-            # the implicit-response experiment (~1000-2000 tokens). Caller can
-            # override.
-            "max_tokens": max_tokens if max_tokens is not None else 4096,
+            # max_tokens is required by the Anthropic API.
+            "max_tokens": max_tokens if max_tokens is not None else default_max,
         }
 
         if system_text is not None:
@@ -111,11 +139,27 @@ class AnthropicProvider:
                 }
             ]
 
-        if _model_supports_sampling_params(model):
+        # Thinking and sampling params are mutually exclusive on adaptive mode
+        # for Opus 4.7 — adaptive disallows temperature anyway. For other
+        # models we only set temperature if thinking is off.
+        if not thinking and _model_supports_sampling_params(model):
             request["temperature"] = temperature
-        # Else: silently drop. Opus 4.7 returns 400 on temperature.
 
-        resp = self._client.messages.create(**request)
+        think_payload = _thinking_param_for(model, thinking)
+        if think_payload is not None:
+            request["thinking"] = think_payload
+
+        try:
+            resp = self._client.messages.create(**request)
+        except Exception as e:  # noqa: BLE001 — narrow on message text below
+            # Adaptive thinking is not universally supported. If the server
+            # rejects it, fall back to manual mode once and retry.
+            msg = str(e).lower()
+            if thinking and ("adaptive" in msg or "thinking" in msg) and "400" in msg:
+                request["thinking"] = _thinking_manual_fallback()
+                resp = self._client.messages.create(**request)
+            else:
+                raise
 
         # Concatenate text blocks; ignore any thinking blocks (they're empty by
         # default on Opus 4.7 anyway).

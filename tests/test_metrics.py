@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+import numpy as np
+
 from paratext.analysis.classifiers import classify_response
 from paratext.analysis.metrics import (
     aggregate_explicit,
     aggregate_implicit,
+    bootstrap_paired_delta_ci,
     comparison_table,
+    comparison_table_with_ci,
 )
 
 
@@ -101,3 +105,75 @@ def test_aggregate_implicit_handles_empty_input():
     out = aggregate_implicit([])
     assert out["per_class"].empty
     assert out["paired_deltas"].empty
+
+
+def test_bootstrap_ci_is_deterministic_under_seed():
+    diffs = np.array([0.1, 0.2, 0.3, 0.4, 0.5])
+    a = bootstrap_paired_delta_ci(diffs, n_bootstrap=500, seed=42)
+    b = bootstrap_paired_delta_ci(diffs, n_bootstrap=500, seed=42)
+    assert a == b
+
+
+def test_bootstrap_ci_brackets_the_mean():
+    rng = np.random.default_rng(0)
+    diffs = rng.normal(loc=0.4, scale=0.05, size=50)
+    lo, hi = bootstrap_paired_delta_ci(diffs, n_bootstrap=2000, seed=0)
+    assert lo <= float(diffs.mean()) <= hi
+    # CI should also exclude zero for a clearly-positive effect at this n.
+    assert lo > 0
+
+
+def test_bootstrap_ci_returns_nan_for_singleton():
+    lo, hi = bootstrap_paired_delta_ci(np.array([0.5]))
+    assert np.isnan(lo) and np.isnan(hi)
+
+
+def test_bootstrap_ci_ignores_nan_inputs():
+    diffs = np.array([0.4, 0.5, np.nan, 0.6])
+    lo, hi = bootstrap_paired_delta_ci(diffs, n_bootstrap=500, seed=0)
+    assert lo > 0 and hi > lo
+
+
+def test_paired_deltas_include_ci_columns():
+    records = [
+        _explicit_record("p1", "polished_neutral", 0.10),
+        _explicit_record("p1", "fatigue_coded", 0.50),
+        _explicit_record("p2", "polished_neutral", 0.05),
+        _explicit_record("p2", "fatigue_coded", 0.45),
+        _explicit_record("p3", "polished_neutral", 0.10),
+        _explicit_record("p3", "fatigue_coded", 0.50),
+    ]
+    out = aggregate_explicit(records)
+    deltas = out["paired_deltas"]
+    row = deltas[
+        (deltas["variant_class"] == "fatigue_coded") & (deltas["field"] == "fatigue")
+    ].iloc[0]
+    assert "ci_lo" in row and "ci_hi" in row
+    assert row["ci_lo"] <= row["delta_mean"] <= row["ci_hi"]
+    assert row["n"] == 3
+
+
+def test_comparison_table_with_ci_formats_cells():
+    records = [
+        _explicit_record("p1", "polished_neutral", 0.10),
+        _explicit_record("p1", "fatigue_coded", 0.50),
+        _explicit_record("p2", "polished_neutral", 0.10),
+        _explicit_record("p2", "fatigue_coded", 0.50),
+    ]
+    out = aggregate_explicit(records)
+    wide = comparison_table_with_ci(out["paired_deltas"], ("fatigue",))
+    cell = wide.loc["fatigue_coded", "fatigue"]
+    assert cell.startswith("+0.400 [")
+    assert cell.endswith("]")
+
+
+def test_comparison_table_with_ci_tags_singleton_cells():
+    """When n=1 the CI is not computable; the cell should still render the
+    delta but tagged with `(n=1)` so the reader knows it's not stable."""
+    records = [
+        _explicit_record("p1", "polished_neutral", 0.10),
+        _explicit_record("p1", "fatigue_coded", 0.50),
+    ]
+    out = aggregate_explicit(records)
+    wide = comparison_table_with_ci(out["paired_deltas"], ("fatigue",))
+    assert wide.loc["fatigue_coded", "fatigue"] == "+0.400 (n=1)"
