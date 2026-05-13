@@ -167,19 +167,23 @@ def _detect_cues(text: str) -> dict[str, float]:
 _KNOWN_WORDS_HINT = re.compile(r"\b[a-z]{2,}\b")
 
 
+_RARE_BIGRAMS = re.compile(r"(qj|xz|vb|kq|jx|wq|zx|pq|cv|bn|nm|lp|fg|hj|dl)")
+
+
 def _estimate_typo_density(text: str) -> float:
     """Rough proxy: fraction of words containing a non-standard letter run.
 
-    This isn't a real spell checker; it's a deterministic heuristic that
-    correlates with our typo generators (adjacent-swap, drop, double, neighbor).
+    Heuristic that loosely correlates with the typo generators (transposition,
+    deletion, QWERTY-adjacent substitution, QWERTY-adjacent insertion). Looks
+    for rare letter pairs that are common artifacts of fat-finger errors on a
+    QWERTY layout.
     """
     words = _KNOWN_WORDS_HINT.findall(text.lower())
     if not words:
         return 0.0
     odd = 0
     for w in words:
-        # Triple-letter run (from `_double_char`) or rare bigrams.
-        if re.search(r"(.)\1\1", w) or re.search(r"(qj|xz|vb|kq|jx|wq|zx)", w):
+        if _RARE_BIGRAMS.search(w):
             odd += 1
     return odd / len(words)
 

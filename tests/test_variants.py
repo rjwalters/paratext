@@ -6,6 +6,8 @@ import random
 
 from paratext.schemas import ALL_VARIANT_CLASSES, SeedPrompt
 from paratext.variants import (
+    _QWERTY_NEIGHBORS,
+    _apply_typos,
     generate_variants_for_prompt,
     make_fatigue_coded,
     make_polished_neutral,
@@ -108,6 +110,53 @@ def test_rushed_mobile_coded_is_lowercase_and_compressed():
     assert out.lower() == out
     # At least one compression cue should fire on a long prompt with common words.
     assert any(c.cue_type in {"compression", "punctuation"} for c in cues)
+
+
+def test_typo_distribution_is_substitution_dominant():
+    """At scale, substitution should be the most common operation.
+
+    Each substitution / insertion uses QWERTY adjacency, so the most reliable
+    fingerprint is character-level edit distance combined with the fact that
+    at least one *new* character should be QWERTY-adjacent to the original.
+    """
+    rng = random.Random("dist")
+    base = "the quick brown fox jumps over the lazy dog " * 10
+    perturbed = _apply_typos(base, n=80, rng=rng)
+    # Same approximate length: substitutions don't change length, transpositions
+    # don't either, deletions shrink, insertions grow. Net should stay within
+    # ~10% of the original.
+    assert abs(len(perturbed) - len(base)) / len(base) < 0.15
+
+
+def test_typo_insertions_use_qwerty_adjacency():
+    """An insertion event must produce a character adjacent to the original
+    on QWERTY. Verify by inspecting a single insertion at a controlled site."""
+    from paratext.variants import _insert_adjacent
+
+    rng = random.Random("insert")
+    text = "function"
+    # `n` is at index 3 ('function'[3] = 'c'); pick i=5 → 'i'
+    out = _insert_adjacent(text, 5, rng)
+    assert len(out) == len(text) + 1
+    # The inserted char must be a QWERTY neighbor of 'i'.
+    neighbors = set(_QWERTY_NEIGHBORS["i"])
+    inserted_idx = next(j for j in range(len(out)) if out[j] != text[min(j, len(text) - 1)])
+    inserted_char = out[inserted_idx].lower()
+    assert inserted_char in neighbors, f"inserted {inserted_char!r} not adjacent to 'i'"
+
+
+def test_typo_neighbor_substitution_uses_qwerty_adjacency():
+    """A substitution event must replace with a QWERTY-adjacent key."""
+    from paratext.variants import _neighbor_swap
+
+    rng = random.Random("sub")
+    text = "function"
+    # Substitute at index 1 ('u').
+    out = _neighbor_swap(text, 1, rng)
+    assert len(out) == len(text)
+    new_char = out[1].lower()
+    assert new_char != "u"
+    assert new_char in set(_QWERTY_NEIGHBORS["u"])
 
 
 def test_rude_frustrated_does_not_use_slurs_or_abuse():

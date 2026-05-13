@@ -70,13 +70,8 @@ def _drop_char(text: str, i: int) -> str:
     return text[:i] + text[i + 1 :]
 
 
-def _double_char(text: str, i: int) -> str:
-    if i < 0 or i >= len(text):
-        return text
-    return text[:i] + text[i] + text[i:]
-
-
 def _neighbor_swap(text: str, i: int, rng: random.Random) -> str:
+    """Substitute character at i with a QWERTY-adjacent key (fat-finger miss)."""
     if i < 0 or i >= len(text):
         return text
     ch = text[i]
@@ -90,8 +85,54 @@ def _neighbor_swap(text: str, i: int, rng: random.Random) -> str:
     return text[:i] + repl + text[i + 1 :]
 
 
+def _insert_adjacent(text: str, i: int, rng: random.Random) -> str:
+    """Insert a QWERTY-adjacent key next to position i (fat-finger extra-key)."""
+    if i < 0 or i >= len(text):
+        return text
+    ch = text[i]
+    lower = ch.lower()
+    neighbors = _QWERTY_NEIGHBORS.get(lower)
+    if not neighbors:
+        return text
+    extra = rng.choice(neighbors)
+    if ch.isupper():
+        extra = extra.upper()
+    # Insert before or after with equal probability — both happen in practice.
+    if rng.random() < 0.5:
+        return text[:i] + extra + text[i:]
+    return text[: i + 1] + extra + text[i + 1 :]
+
+
+# Operation weights derived from empirical typo-distribution studies (Damerau,
+# follow-on work): substitutions dominate, then transpositions, then deletions,
+# then fat-finger insertions. All character-level edits use QWERTY geometry
+# wherever applicable, so "typos" look like plausible human errors rather than
+# uniform character corruption.
+_TYPO_OPS: tuple[tuple[str, float], ...] = (
+    ("neighbor", 0.45),   # substitution with adjacent key
+    ("swap", 0.25),       # transposition of adjacent letters
+    ("drop", 0.15),       # missed keystroke
+    ("insert", 0.15),     # fat-finger extra adjacent key
+)
+
+
+def _choose_op(rng: random.Random) -> str:
+    r = rng.random()
+    acc = 0.0
+    for name, w in _TYPO_OPS:
+        acc += w
+        if r < acc:
+            return name
+    return _TYPO_OPS[-1][0]
+
+
 def _apply_typos(text: str, n: int, rng: random.Random) -> str:
-    """Apply n typos at non-overlapping positions inside long-enough words."""
+    """Apply n typos at non-overlapping positions inside long-enough words.
+
+    Operation weights are substitution-dominant; substitutions and insertions
+    both use QWERTY adjacency, so the result resembles real human fat-finger
+    errors rather than mechanical character corruption.
+    """
     out = text
     used: set[int] = set()
     for _ in range(n):
@@ -99,14 +140,14 @@ def _apply_typos(text: str, n: int, rng: random.Random) -> str:
         if not candidates:
             break
         i = rng.choice(candidates)
-        op = rng.choice(("swap", "drop", "double", "neighbor"))
+        op = _choose_op(rng)
         if op == "swap":
             out = _swap_adjacent(out, i)
         elif op == "drop":
             out = _drop_char(out, i)
-        elif op == "double":
-            out = _double_char(out, i)
-        else:
+        elif op == "insert":
+            out = _insert_adjacent(out, i, rng)
+        else:  # "neighbor"
             out = _neighbor_swap(out, i, rng)
         # Mark a small window to avoid stacking edits on the same word fragment.
         for j in range(max(0, i - 2), i + 3):

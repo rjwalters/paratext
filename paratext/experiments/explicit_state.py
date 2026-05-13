@@ -87,7 +87,7 @@ def _parse_inference(text: str) -> dict[str, Any]:
     def _try_load(s: str):
         try:
             return json.loads(s), None
-        except json.JSONDecodeError as e:
+        except json.JSONDecodeError:
             try:
                 return json.loads(_sanitize_json(s)), None
             except json.JSONDecodeError as e2:
