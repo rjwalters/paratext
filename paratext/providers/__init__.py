@@ -1,8 +1,8 @@
 """Provider registry.
 
-Models are addressed as `scheme/model_id`, e.g. `mock/echo` or
-`openai/gpt-4o-mini`. The scheme picks the provider; the model id is passed
-through to the provider's `complete()`.
+Models are addressed as `scheme/model_id`, e.g. `mock/echo`,
+`openai/gpt-4o-mini`, or `anthropic/claude-opus-4-7`. The scheme picks the
+provider; the model id is passed through to the provider's `complete()`.
 """
 
 from __future__ import annotations
@@ -29,9 +29,13 @@ def get_provider(scheme: str) -> ModelProvider:
         from .openai_provider import OpenAIProvider
 
         return OpenAIProvider()
+    if scheme == "anthropic":
+        from .anthropic_provider import AnthropicProvider
+
+        return AnthropicProvider()
     raise ValueError(
         f"Unknown provider scheme: {scheme!r}. "
-        "Known schemes: mock, openai. "
+        "Known schemes: mock, openai, anthropic. "
         "To add one, implement the ModelProvider protocol and register it here."
     )
 
