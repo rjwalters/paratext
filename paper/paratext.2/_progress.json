@@ -1,0 +1,42 @@
+{
+  "thread": "paratext",
+  "version": 2,
+  "previous_version": 1,
+  "phases": {
+    "read_inputs": "done",
+    "paper_tex": "done",
+    "literature_update": "done",
+    "compile_pdfs": "done",
+    "self_check": "done"
+  },
+  "review_issues_addressed": {
+    "critical": {
+      "1_failure_count": "fixed: 5 → 19 (0.19% → 0.73%) in §3.3 and abstract",
+      "2_temperature_method_claim": "fixed: §3.3 now states no sampling parameters were sent under adaptive thinking",
+      "3_missing_related_work": "added Sharma 2024, Kadavath 2022, McKenzie 2023, Mind the Gap 2025, Strachan 2024, Lin 2022 (6 new refs)",
+      "4_calibration_overclaim": "fixed: title and section names changed from 'Calibration' to 'Self-Reported Confidence' / 'response behavior'"
+    },
+    "important": {
+      "5_single_observation_per_cell": "noted in §3.4 statistics paragraph",
+      "6_speculative_confidence_interpretation": "abstract now explicitly says 'whether this reflects epistemic shift or stylistic mirroring is not resolved'",
+      "7_thinking_mode_confound": "noted in §3.3 with proposed no-thinking control as fix",
+      "8_implicit_classifier_crudeness": "noted in §3.2 and section retitled to 'No literal user-state labels'",
+      "9_system_prompt_doing_work": "noted in §3.2 and §6.1",
+      "10_rude_frustrated_conflation": "noted in §3.1 variant class definition",
+      "11_bibliography_verification": "literature.md flags 4 specific citations to verify"
+    },
+    "suggestions_applied": {
+      "fig4_legend_position": "moved from 'lower left' to 'upper right'",
+      "per_domain_safety_breakdown": "added as new §7 with new fig5 from existing data",
+      "silent_failure_asymmetry": "now noted as data in §3.3"
+    },
+    "suggestions_deferred": [
+      "results-summary table (3x3) — keep as a v3 option",
+      "personal-anecdote vs academic intro decision — kept anecdote per user's framing"
+    ]
+  },
+  "compile_warnings": [
+    "2 overfull hbox warnings on lines 144-145 and 214-215 (long technical terms at line ends; cosmetic)"
+  ],
+  "next_step": "Run /pub-review paratext.2 for another cycle. Score >= 32/40 with no critical issues = ready for submission."
+}
