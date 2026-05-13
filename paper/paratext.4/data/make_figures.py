@@ -63,10 +63,10 @@ def _delta_row(paired, variant_class: str, field: str):
     return float(r["delta_mean"]), float(r["ci_lo"]), float(r["ci_hi"])
 
 
-def _bar_with_ci(ax, x, vals, errs, color, label):
+def _bar_with_ci(ax, x, vals, errs, color, label, width=0.28):
     yerr = np.array([[v - lo for v, (lo, _) in zip(vals, errs)],
                      [hi - v for v, (_, hi) in zip(vals, errs)]])
-    ax.bar(x, vals, color=color, label=label, alpha=0.85, edgecolor="black", linewidth=0.5)
+    ax.bar(x, vals, width, color=color, label=label, alpha=0.85, edgecolor="black", linewidth=0.5)
     ax.errorbar(x, vals, yerr=yerr, fmt="none", ecolor="black", elinewidth=0.8, capsize=2)
 
 
@@ -93,7 +93,7 @@ def fig1_fatigue_sensitivity(per_model: dict):
     ax.legend(loc="upper left", frameon=False, fontsize=9)
     fig.tight_layout()
     out = FIGDIR / "fig1_fatigue_sensitivity.pdf"
-    fig.savefig(out, dpi=150)
+    fig.savefig(out, dpi=150); fig.savefig(out.with_suffix(".png"), dpi=150)
     plt.close(fig)
     print(f"wrote {out}")
 
@@ -113,7 +113,7 @@ def fig2_specificity_inversion(per_model: dict):
             d = _delta_row(per_model[m], vc, "fatigue")
             vals.append(d[0]); errs.append((d[1], d[2]))
         offsets = x_idx + (j - 0.5) * width
-        _bar_with_ci(ax, offsets, vals, errs, class_colors[vc], class_labels[vc])
+        _bar_with_ci(ax, offsets, vals, errs, class_colors[vc], class_labels[vc], width=width)
     ax.set_xticks(x_idx)
     ax.set_xticklabels([MODEL_LABELS[m] for m in MODELS])
     ax.set_ylabel(r"$\Delta$ fatigue vs polished\_neutral")
@@ -122,7 +122,7 @@ def fig2_specificity_inversion(per_model: dict):
     ax.axhline(0, color="black", linewidth=0.5)
     fig.tight_layout()
     out = FIGDIR / "fig2_specificity_inversion.pdf"
-    fig.savefig(out, dpi=150)
+    fig.savefig(out, dpi=150); fig.savefig(out.with_suffix(".png"), dpi=150)
     plt.close(fig)
     print(f"wrote {out}")
 
@@ -150,7 +150,7 @@ def fig3_confidence_asymmetry(per_model: dict):
     ax.legend(loc="upper left", frameon=False, fontsize=9)
     fig.tight_layout()
     out = FIGDIR / "fig3_confidence_asymmetry.pdf"
-    fig.savefig(out, dpi=150)
+    fig.savefig(out, dpi=150); fig.savefig(out.with_suffix(".png"), dpi=150)
     plt.close(fig)
     print(f"wrote {out}")
 
@@ -178,7 +178,7 @@ def fig4_num_words_compression(per_model_impl: dict):
     ax.legend(loc="upper right", frameon=False, fontsize=8)
     fig.tight_layout()
     out = FIGDIR / "fig4_num_words_compression.pdf"
-    fig.savefig(out, dpi=150)
+    fig.savefig(out, dpi=150); fig.savefig(out.with_suffix(".png"), dpi=150)
     plt.close(fig)
     print(f"wrote {out}")
 
@@ -224,7 +224,7 @@ def fig5_user_safety_by_class():
     ax.legend(loc="upper left", frameon=False, fontsize=9)
     fig.tight_layout()
     out = FIGDIR / "fig5_user_safety_by_class.pdf"
-    fig.savefig(out, dpi=150)
+    fig.savefig(out, dpi=150); fig.savefig(out.with_suffix(".png"), dpi=150)
     plt.close(fig)
     print(f"wrote {out}")
 
