@@ -1,0 +1,15 @@
+{
+  "thread": "paratext",
+  "version": 1,
+  "phases": {
+    "interview": "done",
+    "literature_search": "lightweight",
+    "paper_tex": "done",
+    "compile_pdfs": "done"
+  },
+  "notes": [
+    "Literature search was kept lightweight for v1 — citations are seeded with canonical references but the related-work section is not exhaustive. /pub-revise can expand it.",
+    "Figures generated from real data in data/runs/cross_model/. Re-run paper/paratext.1/data/make_figures.py if data is regenerated.",
+    "Bibliography entries: verify each before final submission — they were drafted from general knowledge of the field, not a real search."
+  ]
+}
