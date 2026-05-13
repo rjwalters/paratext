@@ -1,0 +1,34 @@
+{
+  "thread": "paratext",
+  "version": 4,
+  "previous_version": 3,
+  "phases": {
+    "read_inputs": "done",
+    "paper_tex": "done",
+    "literature_update": "carried over from v3",
+    "compile_pdfs": "done",
+    "self_check": "done"
+  },
+  "review_issues_addressed": {
+    "critical": {
+      "1_handcoding_methodology": "added §3.5 (sec:handcoding) with codebook, coder identity, IRR (κ=0.36), and circularity disclosure"
+    },
+    "important": {
+      "2_smaller_models_worse_overclaim": "removed entirely; v3 cross-model claim retracted in favor of an honest exploratory analysis",
+      "3_api_timestamp_effort_param": "added one-paragraph note in §3.3 (date 2026-05-13, no effort parameter, defaults documented)",
+      "4_worry_sorry_footnote": "added in §1 — explains the typo-on-cue artifact",
+      "5_section_title_alignment": "no changes; v3 alignment still holds (Sensitivity, Specificity, Behavioral Adaptation)",
+      "6_v2_reframing_lead": "§7 now leads with the protect/punish framing, mentions the methodological evolution as a closing note"
+    }
+  },
+  "v3_to_v4_substantive_changes": {
+    "user_safety_construct_split": "Replaced 'any safety warning' with 'user-directed safety warning' across the codebook. Equipment damage and data loss no longer count.",
+    "expanded_coding_to_all_9_classes": "Opus 4.7 coded all 160 hardware_safety implicit responses (was 35 before). New Figure 5 shows the full paired-Δ matrix.",
+    "headline_change": "v3 said 'all 3 models drop safety warnings under rude framing, smaller models worst.' v4 retracts that and reports a different exploratory finding: Opus increases user-safety warnings under cue_only (+0.33) but not fatigue_coded (-0.17). Hypothesis: typos suppress protective response.",
+    "irr_against_user": "0.36 Cohen's κ between Opus-coder and first author on the 35-response overlap. Reported transparently in §3.5 and Limitations."
+  },
+  "compile_warnings": [
+    "1 overfull hbox at line 165-166 (cosmetic)"
+  ],
+  "next_step": "If this is the publication version, commit, push, and publish to rjwalters.info as a blog companion. Otherwise /pub-review paratext.4 for one more cycle."
+}
