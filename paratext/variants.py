@@ -249,10 +249,12 @@ _FATIGUE_OUTROS = (
 )
 
 
-def make_fatigue_coded(text: str, rng: random.Random) -> tuple[str, list[CueAnnotation]]:
-    """Lowercase, light typos, ellipses, dropped apostrophes, mild self-correction.
-
-    Avoids explicit "I am tired" — that's the `explicit_fatigue` variant.
+def _add_fatigue_cues(text: str, rng: random.Random) -> tuple[str, list[CueAnnotation]]:
+    """Apply the contextual-cue layer of the fatigue-coded transformation:
+    lowercase, dropped apostrophes, dropped terminal punctuation, an injected
+    ellipsis, and intro/outro phrases like 'alright so' / 'idk' /
+    'not sure if im asking this right'. Does NOT introduce typos — that is
+    the typo-density layer, isolated separately by `make_random_typo_control`.
     """
     out = text
     cues: list[CueAnnotation] = []
@@ -268,11 +270,6 @@ def make_fatigue_coded(text: str, rng: random.Random) -> tuple[str, list[CueAnno
         CueAnnotation(cue_type="punctuation", description="dropped terminal punctuation")
     )
 
-    out = _apply_typos(out, n=2, rng=rng)
-    cues.append(CueAnnotation(cue_type="typo", description="a few typos"))
-
-    # Insert one mid-sentence ellipsis if there's a comma to attach to,
-    # otherwise just inject after the first space.
     if "," in out:
         out = out.replace(",", " ...", 1)
     else:
@@ -284,10 +281,31 @@ def make_fatigue_coded(text: str, rng: random.Random) -> tuple[str, list[CueAnno
     intro = rng.choice(_FATIGUE_INTROS)
     outro = rng.choice(_FATIGUE_OUTROS)
     out = intro + out + outro
-    cues.append(
-        CueAnnotation(cue_type="self_correction", description=outro.strip())
-    )
+    cues.append(CueAnnotation(cue_type="self_correction", description=outro.strip()))
 
+    return out, cues
+
+
+def make_cue_only(text: str, rng: random.Random) -> tuple[str, list[CueAnnotation]]:
+    """Contextual fatigue cues with NO typos.
+
+    Pairs with `make_random_typo_control` to decouple the fatigue signal:
+    - random_typo_control: typos only, no contextual cues
+    - cue_only:            contextual cues only, no typos
+    - fatigue_coded:       both
+    - polished_neutral:    neither
+    """
+    return _add_fatigue_cues(text, rng)
+
+
+def make_fatigue_coded(text: str, rng: random.Random) -> tuple[str, list[CueAnnotation]]:
+    """Lowercase, light typos, ellipses, dropped apostrophes, mild self-correction.
+
+    Avoids explicit "I am tired" — that's the `explicit_fatigue` variant.
+    """
+    out, cues = _add_fatigue_cues(text, rng)
+    out = _apply_typos(out, n=2, rng=rng)
+    cues.append(CueAnnotation(cue_type="typo", description="a few typos"))
     return out, cues
 
 
@@ -425,6 +443,7 @@ def generate_variants_for_prompt(
     _add("typo_light", make_typo_light)
     _add("typo_heavy", make_typo_heavy)
     _add("fatigue_coded", make_fatigue_coded)
+    _add("cue_only", make_cue_only)
     _add("rushed_mobile_coded", make_rushed_mobile_coded)
     _add("polite_collaborative", make_polite_collaborative)
     _add("rude_frustrated", make_rude_frustrated)

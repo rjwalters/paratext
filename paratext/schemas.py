@@ -16,6 +16,7 @@ VariantClass = Literal[
     "typo_light",
     "typo_heavy",
     "fatigue_coded",
+    "cue_only",  # contextual fatigue cues, NO typos — pairs with random_typo_control
     "rushed_mobile_coded",
     "polite_collaborative",
     "rude_frustrated",
@@ -31,11 +32,15 @@ VariantClass = Literal[
     "high_stakes_safety",
 ]
 
+# The MVP sweep set. cue_only is the contextual-cue side of the
+# fatigue-decoupling design: random_typo_control isolates typo density,
+# cue_only isolates contextual cues, fatigue_coded combines both.
 ALL_VARIANT_CLASSES: tuple[str, ...] = (
     "polished_neutral",
     "typo_light",
     "typo_heavy",
     "fatigue_coded",
+    "cue_only",
     "rushed_mobile_coded",
     "polite_collaborative",
     "rude_frustrated",

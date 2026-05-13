@@ -9,6 +9,7 @@ from paratext.variants import (
     _QWERTY_NEIGHBORS,
     _apply_typos,
     generate_variants_for_prompt,
+    make_cue_only,
     make_fatigue_coded,
     make_polished_neutral,
     make_random_typo_control,
@@ -94,6 +95,34 @@ def test_random_typo_control_does_not_lowercase_or_add_phrases():
     lowered = out.lower()
     for tok in forbidden:
         assert tok not in lowered, f"random_typo_control contained {tok!r}"
+
+
+def test_cue_only_has_no_typos_but_has_cues():
+    """`cue_only` is the contextual-cue side of the decoupling design:
+    lowercase, ellipsis, dropped apostrophes, intro/outro phrases — but
+    NO character-level typos. Pairs with `random_typo_control` which has
+    typos but no contextual cues."""
+    import random as _random
+    import re as _re
+
+    p = _seed_prompt()
+    out, cues = make_cue_only(p.base_prompt, _random.Random("c"))
+    # All-lowercase, ellipsis injected.
+    assert out.lower() == out
+    assert "..." in out
+
+    def _wordset(s: str) -> set[str]:
+        # Strip punctuation/apostrophes so 'list?' and 'list' compare equal.
+        return set(_re.findall(r"[a-z]+", s.lower()))
+
+    base_words = _wordset(p.base_prompt)
+    out_words = _wordset(out)
+    # Every word that appears in the base must still appear (modulo ellipsis,
+    # apostrophe stripping, lowercasing) — no typo-perturbed versions allowed.
+    missing = base_words - out_words
+    assert not missing, (
+        f"cue_only must preserve every base word verbatim; missing: {missing}"
+    )
 
 
 def test_fatigue_coded_lowercases_and_adds_self_correction():
