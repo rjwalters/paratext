@@ -10,11 +10,11 @@ limitations, submission targets, ethics statement).
 
 ## Thread name
 
-`textual-intuition`
+`paratext`
 
 ## Status
 
-- **State:** EMPTY (no `textual-intuition.1/` yet).
+- **State:** EMPTY (no `paratext.1/` yet).
 - **Next action:** `/pub-draft` to create version 1 once a first set of
   results is in hand from a real provider.
 

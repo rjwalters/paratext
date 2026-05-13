@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import random
 
-from textual_intuition.schemas import ALL_VARIANT_CLASSES, SeedPrompt
-from textual_intuition.variants import (
+from paratext.schemas import ALL_VARIANT_CLASSES, SeedPrompt
+from paratext.variants import (
     generate_variants_for_prompt,
     make_fatigue_coded,
     make_polished_neutral,

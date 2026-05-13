@@ -161,7 +161,7 @@ def build_report(
     )
 
     sections: list[str] = []
-    sections.append("# textual-intuition · MVP report\n")
+    sections.append("# paratext · MVP report\n")
     sections.append(
         "## Research question\n\n"
         "Do language models infer latent user states (fatigue, rush, frustration, "

@@ -26,35 +26,35 @@ install:
 	$(PIP) install -e ".[dev,openai]"
 
 format:
-	$(PY) -m ruff format textual_intuition tests scripts
+	$(PY) -m ruff format paratext tests scripts
 
 lint:
-	$(PY) -m ruff check textual_intuition tests scripts
+	$(PY) -m ruff check paratext tests scripts
 
 test:
 	$(PY) -m pytest
 
 generate:
-	$(PY) -m textual_intuition.cli generate-variants \
+	$(PY) -m paratext.cli generate-variants \
 		--input data/seed_prompts.yaml \
 		--output $(VARIANTS)
 
 run-explicit:
-	$(PY) -m textual_intuition.cli run-explicit \
+	$(PY) -m paratext.cli run-explicit \
 		--variants $(VARIANTS) \
 		--model $(MODEL) \
 		--output $(EXPLICIT_OUT) \
 		--limit $(LIMIT)
 
 run-implicit:
-	$(PY) -m textual_intuition.cli run-implicit \
+	$(PY) -m paratext.cli run-implicit \
 		--variants $(VARIANTS) \
 		--model $(MODEL) \
 		--output $(IMPLICIT_OUT) \
 		--limit $(LIMIT)
 
 analyze:
-	$(PY) -m textual_intuition.cli analyze \
+	$(PY) -m paratext.cli analyze \
 		--explicit $(EXPLICIT_OUT) \
 		--implicit $(IMPLICIT_OUT) \
 		--output $(REPORT_OUT)

@@ -36,27 +36,27 @@ Convergence criterion: review score >= 32/40 with 0 critical issues.
 {thread}.{N}
 ```
 
-- **thread**: the paper topic name (e.g., `textual-intuition`)
+- **thread**: the paper topic name (e.g., `paratext`)
 - **N**: integer starting at 1, incremented by `/pub-revise`
 
-Example: `textual-intuition.3` is the 3rd revision of the textual-intuition paper.
+Example: `paratext.3` is the 3rd revision of the paratext paper.
 
 ## Directory Layout
 
-For this project, the default thread name is `textual-intuition`. Paper versions live in `paper/`:
+For this project, the default thread name is `paratext`. Paper versions live in `paper/`:
 
 ```
 paper/
   outline.md                          # Working outline (mirrors docs/paper_outline.md)
-  textual-intuition.1/                # Draft version 1
+  paratext.1/                # Draft version 1
     paper.tex                         # LaTeX paper (standard article class)
     paper.pdf                         # Compiled PDF
     literature.md                     # Literature review notes (internal)
     figures/                          # Python-generated figures (.py --> .pdf/.png)
     data/                             # Supporting scripts and results
-  textual-intuition.1.review/         # Review (read-only sibling)
+  paratext.1.review/         # Review (read-only sibling)
     review.md                         # Scored review report (markdown)
-  textual-intuition.2/                # Revision incorporating review
+  paratext.2/                # Revision incorporating review
     ...                               # Same structure
 ```
 
@@ -107,5 +107,5 @@ Long-running skills (`/pub-draft`, `/pub-revise`, `/pub-figures`) write `_progre
 - `data/variants/variants.jsonl` -- generated cue-class variants (deterministic, regenerable)
 - `data/runs/` -- experiment outputs as JSONL (gitignored)
 - `reports/` -- generated Markdown reports (gitignored)
-- `textual_intuition/` -- source code for variants, providers, experiments, analysis
+- `paratext/` -- source code for variants, providers, experiments, analysis
 - `tests/` -- pytest suite (27 tests, ruff-clean)

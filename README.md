@@ -1,4 +1,4 @@
-# textual-intuition
+# paratext
 
 This repository studies whether language models treat typos, punctuation,
 politeness, and other surface-form features as noise, signal, or both.
@@ -98,7 +98,7 @@ list.
 ### Run outputs: `data/runs/{timestamp}_{model}_{experiment}.jsonl`
 
 One JSON object per `(variant, model, experiment)` triple. See
-`textual_intuition/schemas.py` for the exact `RunRecord` schema.
+`paratext/schemas.py` for the exact `RunRecord` schema.
 
 ## Variant classes
 
@@ -120,7 +120,7 @@ paralinguistic cue patterns from generic text corruption.
 
 ## How to add a model provider
 
-1. Create a new module under `textual_intuition/providers/`.
+1. Create a new module under `paratext/providers/`.
 2. Implement the `ModelProvider` protocol from `providers/base.py`.
 3. Register it in `providers/__init__.py` under a short scheme name.
 4. Pass `--model {scheme}/{model_id}` on the CLI.
@@ -164,9 +164,9 @@ Best:   "Here is the minimal next step. This may be easier to revisit after a br
 ## Repository layout
 
 ```text
-textual-intuition/
+paratext/
   data/                       seed prompts, generated variants, run outputs
-  textual_intuition/
+  paratext/
     schemas.py                pydantic models for prompts, variants, runs
     dataset.py                seed-prompt loader
     variants.py               deterministic variant generators

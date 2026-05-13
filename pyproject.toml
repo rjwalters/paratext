@@ -3,13 +3,13 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "textual-intuition"
+name = "paratext"
 version = "0.1.0"
 description = "Test whether LLMs infer latent user state from textual surface cues, and whether those inferences alter response policy."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "textual-intuition contributors" }]
+authors = [{ name = "paratext contributors" }]
 dependencies = [
     "pydantic>=2.6",
     "pyyaml>=6.0",
@@ -31,10 +31,10 @@ dev = [
 ]
 
 [project.scripts]
-textual-intuition = "textual_intuition.cli:app"
+paratext = "paratext.cli:app"
 
 [tool.setuptools.packages.find]
-include = ["textual_intuition*"]
+include = ["paratext*"]
 
 [tool.ruff]
 line-length = 100
@@ -47,7 +47,7 @@ ignore = ["E501"]
 [tool.ruff.lint.per-file-ignores]
 # Typer's idiomatic API uses typer.Option(...) / typer.Argument(...) as
 # default values; ruff's B008 flag is wrong for this pattern.
-"textual_intuition/cli.py" = ["B008"]
+"paratext/cli.py" = ["B008"]
 "scripts/*.py" = ["B008"]
 
 [tool.pytest.ini_options]

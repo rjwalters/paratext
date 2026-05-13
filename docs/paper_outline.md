@@ -1,6 +1,6 @@
 # Paper / blog post outline
 
-A working outline for writing up the textual-intuition results. Adjust as
+A working outline for writing up the paratext results. Adjust as
 findings come in.
 
 ## Working title

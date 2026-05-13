@@ -1,4 +1,4 @@
-"""Typer-based CLI for textual-intuition.
+"""Typer-based CLI for paratext.
 
 Subcommands:
 - generate-variants  Generate prompt variants from a seed YAML.
@@ -28,7 +28,7 @@ from .providers import get_provider, parse_model_spec
 from .schemas import PromptVariant
 from .variants import generate_all_variants
 
-app = typer.Typer(add_completion=False, no_args_is_help=True, help="textual-intuition CLI")
+app = typer.Typer(add_completion=False, no_args_is_help=True, help="paratext CLI")
 console = Console()
 
 

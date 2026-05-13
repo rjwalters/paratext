@@ -2,7 +2,7 @@
 
 Generated prompt variants live here as JSONL.
 
-Run `make generate` (or `python -m textual_intuition.cli generate-variants ...`) to produce
+Run `make generate` (or `python -m paratext.cli generate-variants ...`) to produce
 `variants.jsonl` from `data/seed_prompts.yaml`.
 
 Each line is a single variant with fields:

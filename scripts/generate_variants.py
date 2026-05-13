@@ -3,7 +3,7 @@
 
 import typer
 
-from textual_intuition.cli import generate_variants_cmd
+from paratext.cli import generate_variants_cmd
 
 if __name__ == "__main__":
     typer.run(generate_variants_cmd)

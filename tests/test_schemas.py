@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from textual_intuition.schemas import (
+from paratext.schemas import (
     CueAnnotation,
     LatentStateInference,
     PromptVariant,

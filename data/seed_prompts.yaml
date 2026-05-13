@@ -1,4 +1,4 @@
-# Seed prompts for textual-intuition.
+# Seed prompts for paratext.
 #
 # Each prompt is a "polished_neutral"-style baseline. The variant generator
 # perturbs surface form while preserving semantic content. Prompts should be

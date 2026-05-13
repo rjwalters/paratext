@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 
-from textual_intuition.providers import get_provider, parse_model_spec
-from textual_intuition.providers.mock import MockProvider
+from paratext.providers import get_provider, parse_model_spec
+from paratext.providers.mock import MockProvider
 
 
 def test_parse_model_spec():

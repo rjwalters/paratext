@@ -5,7 +5,7 @@ A short orientation for contributors.
 ## Module layout
 
 ```
-textual_intuition/
+paratext/
   schemas.py        Pydantic models. Single source of truth for record shapes.
   dataset.py        File I/O for seed prompts, variants, run records. No logic.
   variants.py       Deterministic surface-form perturbations.
@@ -28,7 +28,7 @@ textual_intuition/
 
 ## Adding a new provider
 
-1. Create `textual_intuition/providers/myprovider.py`.
+1. Create `paratext/providers/myprovider.py`.
 2. Implement a class with:
    - a `name` class attribute
    - a `complete(messages, model, temperature, seed=None, max_tokens=None,
@@ -67,7 +67,7 @@ The driver creates a deterministic RNG seeded on
 
 ## Adding a new experiment
 
-1. Create `textual_intuition/experiments/my_experiment.py` with a `run()`
+1. Create `paratext/experiments/my_experiment.py` with a `run()`
    generator that yields `RunRecord`s.
 2. Add a corresponding `Literal` to `ExperimentName` in `schemas.py`.
 3. Add a CLI subcommand in `cli.py`.

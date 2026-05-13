@@ -11,7 +11,7 @@ from pathlib import Path
 
 import typer
 
-from textual_intuition.cli import run_explicit_cmd, run_implicit_cmd
+from paratext.cli import run_explicit_cmd, run_implicit_cmd
 
 app = typer.Typer(add_completion=False)
 

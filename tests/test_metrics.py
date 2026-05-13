@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from textual_intuition.analysis.classifiers import classify_response
-from textual_intuition.analysis.metrics import (
+from paratext.analysis.classifiers import classify_response
+from paratext.analysis.metrics import (
     aggregate_explicit,
     aggregate_implicit,
     comparison_table,

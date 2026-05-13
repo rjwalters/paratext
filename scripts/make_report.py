@@ -3,7 +3,7 @@
 
 import typer
 
-from textual_intuition.cli import analyze_cmd
+from paratext.cli import analyze_cmd
 
 if __name__ == "__main__":
     typer.run(analyze_cmd)
