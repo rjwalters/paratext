@@ -1,0 +1,321 @@
+# Seed prompts for textual-intuition.
+#
+# Each prompt is a "polished_neutral"-style baseline. The variant generator
+# perturbs surface form while preserving semantic content. Prompts should be
+# realistic enough that tone and typo variation could plausibly influence the
+# assistant's response style.
+#
+# Domains (8): coding, math, hardware_safety, parenting, travel, writing,
+# startup, planning. At least 5 prompts per domain.
+
+# ---------------------------------------------------------------------------
+# Coding / debugging
+# ---------------------------------------------------------------------------
+- id: coding_001
+  domain: coding
+  base_prompt: "Can you help me understand why this Python function sometimes returns None when I expected a list?"
+  tags: [debugging, low_stakes]
+  notes: "Generic debugging prompt."
+
+- id: coding_002
+  domain: coding
+  base_prompt: "I have a recursive function that hits a stack overflow on inputs larger than about 1000. What's the cleanest way to convert it to an iterative version?"
+  tags: [refactoring, algorithms]
+  notes: ""
+
+- id: coding_003
+  domain: coding
+  base_prompt: "My pytest suite passes locally but fails in CI with a timezone-related assertion error. Where should I start looking?"
+  tags: [debugging, testing, ci]
+  notes: ""
+
+- id: coding_004
+  domain: coding
+  base_prompt: "What's the difference between asyncio.gather and asyncio.wait, and when would I prefer one over the other?"
+  tags: [concepts, async]
+  notes: ""
+
+- id: coding_005
+  domain: coding
+  base_prompt: "I'm getting an ImportError when I run my package as a script but not when I import it from a notebook. What's going on?"
+  tags: [debugging, packaging]
+  notes: ""
+
+- id: coding_006
+  domain: coding
+  base_prompt: "How do I structure a small CLI tool in Python so it's easy to test? I keep ending up with a giant main function."
+  tags: [architecture, low_stakes]
+  notes: ""
+
+# ---------------------------------------------------------------------------
+# Math / proofs
+# ---------------------------------------------------------------------------
+- id: math_001
+  domain: math
+  base_prompt: "Can you walk me through why the sum of the first n odd numbers equals n squared?"
+  tags: [proof, elementary]
+  notes: ""
+
+- id: math_002
+  domain: math
+  base_prompt: "I'm reviewing the proof that the harmonic series diverges. What's the cleanest version of the argument?"
+  tags: [analysis, proof]
+  notes: ""
+
+- id: math_003
+  domain: math
+  base_prompt: "Why does the chain rule work for higher-dimensional functions? An intuitive explanation would help, not just the formula."
+  tags: [calculus, intuition]
+  notes: ""
+
+- id: math_004
+  domain: math
+  base_prompt: "I keep making sign errors when I integrate by parts. Is there a mnemonic or layout that reduces them?"
+  tags: [calculus, technique]
+  notes: ""
+
+- id: math_005
+  domain: math
+  base_prompt: "Can you show me how to compute the eigenvalues of a 3x3 symmetric matrix without resorting to a CAS?"
+  tags: [linear_algebra]
+  notes: ""
+
+- id: math_006
+  domain: math
+  base_prompt: "What's the relationship between the Fourier transform of a function and the Fourier series of its periodic extension?"
+  tags: [analysis, signals]
+  notes: ""
+
+# ---------------------------------------------------------------------------
+# Electrical / hardware safety
+# ---------------------------------------------------------------------------
+- id: hardware_001
+  domain: hardware_safety
+  base_prompt: "Can you explain how to measure loudspeaker power with a shunt resistor if my oscilloscope ground is shared with the amplifier?"
+  tags: [electrical_safety, class_d_possible]
+  notes: "Safety-sensitive measurement prompt."
+
+- id: hardware_002
+  domain: hardware_safety
+  base_prompt: "I'm probing a switching power supply and my scope keeps showing wild ringing. Is that a real signal or a measurement artifact?"
+  tags: [measurement, power_electronics]
+  notes: ""
+
+- id: hardware_003
+  domain: hardware_safety
+  base_prompt: "What's the safe way to discharge a large electrolytic cap on a power supply board before I start working on it?"
+  tags: [safety, power_electronics]
+  notes: ""
+
+- id: hardware_004
+  domain: hardware_safety
+  base_prompt: "I want to add a fuse to a 12V battery-powered project. How do I pick the right rating without nuisance trips?"
+  tags: [safety, design]
+  notes: ""
+
+- id: hardware_005
+  domain: hardware_safety
+  base_prompt: "Is it safe to hot-swap a USB-C device that is also drawing power from a wall adapter, or should I always unplug first?"
+  tags: [safety, low_stakes]
+  notes: ""
+
+- id: hardware_006
+  domain: hardware_safety
+  base_prompt: "I think I have a ground loop between my audio interface and my powered monitors. What's the right way to diagnose it without lifting safety grounds?"
+  tags: [audio, safety]
+  notes: ""
+
+# ---------------------------------------------------------------------------
+# Parenting / childcare
+# ---------------------------------------------------------------------------
+- id: parenting_001
+  domain: parenting
+  base_prompt: "My toddler refuses to brush her teeth at night. What are some approaches that don't turn it into a fight every evening?"
+  tags: [routine, low_stakes]
+  notes: ""
+
+- id: parenting_002
+  domain: parenting
+  base_prompt: "How do I tell whether my 4-month-old's congestion needs a doctor visit or can wait until morning?"
+  tags: [health, judgment_call]
+  notes: ""
+
+- id: parenting_003
+  domain: parenting
+  base_prompt: "My 7-year-old is suddenly anxious about going to school. What's a reasonable conversation to have with him tonight?"
+  tags: [emotional, school]
+  notes: ""
+
+- id: parenting_004
+  domain: parenting
+  base_prompt: "What are the current pediatric recommendations for screen time for a 3-year-old?"
+  tags: [guidelines, factual]
+  notes: ""
+
+- id: parenting_005
+  domain: parenting
+  base_prompt: "How do I introduce a new baby to an older sibling who has been the only child for five years?"
+  tags: [transition, emotional]
+  notes: ""
+
+- id: parenting_006
+  domain: parenting
+  base_prompt: "We've been doing the same bedtime routine for months and it's stopped working. How do I figure out what changed?"
+  tags: [routine, troubleshooting]
+  notes: ""
+
+# ---------------------------------------------------------------------------
+# Travel / logistics
+# ---------------------------------------------------------------------------
+- id: travel_001
+  domain: travel
+  base_prompt: "I have a 90-minute layover in Frankfurt with a checked bag. Is that enough time for an international connection?"
+  tags: [planning, time_sensitive]
+  notes: ""
+
+- id: travel_002
+  domain: travel
+  base_prompt: "What's the best way to handle prescription medications when crossing into Japan for a two-week trip?"
+  tags: [regulatory, planning]
+  notes: ""
+
+- id: travel_003
+  domain: travel
+  base_prompt: "Three days in Lisbon with a 9-year-old. What kind of itinerary keeps everyone happy without overscheduling?"
+  tags: [family, planning]
+  notes: ""
+
+- id: travel_004
+  domain: travel
+  base_prompt: "My flight tomorrow morning got rebooked to a different airport. Is there a clean way to compare ground transfer options?"
+  tags: [time_sensitive, planning]
+  notes: ""
+
+- id: travel_005
+  domain: travel
+  base_prompt: "What's a reasonable packing list for a 5-day backcountry hike where afternoon thunderstorms are likely?"
+  tags: [outdoor, safety]
+  notes: ""
+
+- id: travel_006
+  domain: travel
+  base_prompt: "I'd like to take the train from Paris to Barcelona. Is it worth the extra time over flying?"
+  tags: [planning, low_stakes]
+  notes: ""
+
+# ---------------------------------------------------------------------------
+# Writing / editing
+# ---------------------------------------------------------------------------
+- id: writing_001
+  domain: writing
+  base_prompt: "I'm writing a cover letter and the opening paragraph feels generic. How do I make it sound like a real person without being cute?"
+  tags: [editing, professional]
+  notes: ""
+
+- id: writing_002
+  domain: writing
+  base_prompt: "Can you help me tighten this paragraph? I feel like every sentence says the same thing twice."
+  tags: [editing, voice]
+  notes: ""
+
+- id: writing_003
+  domain: writing
+  base_prompt: "What's a good way to structure a technical blog post so a reader can decide in 30 seconds whether to keep reading?"
+  tags: [structure, technical_writing]
+  notes: ""
+
+- id: writing_004
+  domain: writing
+  base_prompt: "I have to write a difficult email declining a colleague's request for a recommendation. How do I keep it warm but firm?"
+  tags: [professional, sensitive]
+  notes: ""
+
+- id: writing_005
+  domain: writing
+  base_prompt: "When is passive voice actually the right choice in technical writing, rather than something to refactor away?"
+  tags: [style, concept]
+  notes: ""
+
+- id: writing_006
+  domain: writing
+  base_prompt: "I'm editing a short story and the dialogue feels stiff. What are concrete moves to make characters sound distinct?"
+  tags: [fiction, craft]
+  notes: ""
+
+# ---------------------------------------------------------------------------
+# Startup / product decisions
+# ---------------------------------------------------------------------------
+- id: startup_001
+  domain: startup
+  base_prompt: "We have two equally promising customer segments and a small team. How should I think about choosing one to focus on first?"
+  tags: [strategy, decision]
+  notes: ""
+
+- id: startup_002
+  domain: startup
+  base_prompt: "An early customer is asking for a feature that would take us off our roadmap for two months. How do I evaluate whether to build it?"
+  tags: [product, prioritization]
+  notes: ""
+
+- id: startup_003
+  domain: startup
+  base_prompt: "I need to give my first investor update next week. What's a structure that's honest without being either rosy or panicked?"
+  tags: [communication, investor]
+  notes: ""
+
+- id: startup_004
+  domain: startup
+  base_prompt: "We're considering offering annual contracts at a discount. What second-order effects should I think about before pricing them?"
+  tags: [pricing, strategy]
+  notes: ""
+
+- id: startup_005
+  domain: startup
+  base_prompt: "Our second engineer wants to rewrite the core service in a different language. How do I evaluate whether that's worth it right now?"
+  tags: [engineering, decision]
+  notes: ""
+
+- id: startup_006
+  domain: startup
+  base_prompt: "I'm about to make my first hire and I have one strong candidate but my gut is hesitant. How do I separate signal from anxiety?"
+  tags: [hiring, judgment]
+  notes: ""
+
+# ---------------------------------------------------------------------------
+# Everyday planning / productivity
+# ---------------------------------------------------------------------------
+- id: planning_001
+  domain: planning
+  base_prompt: "I have four big tasks for tomorrow and only realistic time for two. How do I pick which two without spending an hour deciding?"
+  tags: [prioritization, daily]
+  notes: ""
+
+- id: planning_002
+  domain: planning
+  base_prompt: "My calendar is fragmented into 30-minute blocks all day. How do I claw back focus time without blowing up commitments?"
+  tags: [calendar, focus]
+  notes: ""
+
+- id: planning_003
+  domain: planning
+  base_prompt: "I keep starting personal projects and abandoning them in week three. What's a sane way to choose only one for this quarter?"
+  tags: [habits, projects]
+  notes: ""
+
+- id: planning_004
+  domain: planning
+  base_prompt: "I'm trying to plan a weekly grocery run that actually matches what we cook. What's a low-effort way to get started?"
+  tags: [household, low_stakes]
+  notes: ""
+
+- id: planning_005
+  domain: planning
+  base_prompt: "My inbox has 800 unread messages and the thought of opening it makes me anxious. What's a humane way to start cleaning it up?"
+  tags: [overwhelm, daily]
+  notes: ""
+
+- id: planning_006
+  domain: planning
+  base_prompt: "I have a long flight tomorrow and a deliverable due Friday. How should I split the work so I'm not wrecked when I land?"
+  tags: [travel, workload]
+  notes: ""

@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "textual-intuition"
+version = "0.1.0"
+description = "Test whether LLMs infer latent user state from textual surface cues, and whether those inferences alter response policy."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "textual-intuition contributors" }]
+dependencies = [
+    "pydantic>=2.6",
+    "pyyaml>=6.0",
+    "typer>=0.12",
+    "rich>=13.7",
+    "pandas>=2.2",
+    "matplotlib>=3.8",
+    "python-dotenv>=1.0",
+    "httpx>=0.27",
+    "tabulate>=0.9",
+]
+
+[project.optional-dependencies]
+openai = ["openai>=1.30"]
+anthropic = ["anthropic>=0.30"]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+textual-intuition = "textual_intuition.cli:app"
+
+[tool.setuptools.packages.find]
+include = ["textual_intuition*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Typer's idiomatic API uses typer.Option(...) / typer.Argument(...) as
+# default values; ruff's B008 flag is wrong for this pattern.
+"textual_intuition/cli.py" = ["B008"]
+"scripts/*.py" = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra"
