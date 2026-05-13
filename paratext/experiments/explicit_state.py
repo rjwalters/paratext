@@ -7,6 +7,7 @@ likely latent state, with required textual evidence and explicit caveats.
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Iterable, Iterator
 from datetime import UTC, datetime
 from typing import Any
@@ -54,6 +55,25 @@ def _build_messages(variant: PromptVariant) -> list[dict[str, str]]:
     ]
 
 
+_BARE_ENUM_FIX = re.compile(
+    r'("strength"\s*:\s*)(weak|moderate|strong)\b',
+    re.IGNORECASE,
+)
+_BARE_LENGTH_FIX = re.compile(
+    r'("desired_response_length"\s*:\s*)(short|medium|long)\b',
+    re.IGNORECASE,
+)
+
+
+def _sanitize_json(s: str) -> str:
+    """Patch common LLM JSON-output errors: bare enum values, trailing commas."""
+    s = _BARE_ENUM_FIX.sub(lambda m: f'{m.group(1)}"{m.group(2).lower()}"', s)
+    s = _BARE_LENGTH_FIX.sub(lambda m: f'{m.group(1)}"{m.group(2).lower()}"', s)
+    # Trailing commas inside objects / arrays.
+    s = re.sub(r",(\s*[}\]])", r"\1", s)
+    return s
+
+
 def _parse_inference(text: str) -> dict[str, Any]:
     """Best-effort parse of a JSON object from a model response."""
     candidate = text.strip()
@@ -63,18 +83,27 @@ def _parse_inference(text: str) -> dict[str, Any]:
         # Drop a leading "json\n" tag if present.
         if candidate.lower().startswith("json"):
             candidate = candidate[4:].lstrip("\n")
-    try:
-        obj = json.loads(candidate)
-    except json.JSONDecodeError:
+
+    def _try_load(s: str):
+        try:
+            return json.loads(s), None
+        except json.JSONDecodeError as e:
+            try:
+                return json.loads(_sanitize_json(s)), None
+            except json.JSONDecodeError as e2:
+                return None, e2
+
+    obj, err = _try_load(candidate)
+    if obj is None:
         # Try to slice to the outermost braces.
         start = candidate.find("{")
         end = candidate.rfind("}")
         if start == -1 or end == -1 or end <= start:
             return {"_parse_error": "no JSON object found", "_raw": text}
-        try:
-            obj = json.loads(candidate[start : end + 1])
-        except json.JSONDecodeError as e:
-            return {"_parse_error": str(e), "_raw": text}
+        obj, err = _try_load(candidate[start : end + 1])
+        if obj is None:
+            return {"_parse_error": str(err), "_raw": text}
+
     # Validate softly: coerce to LatentStateInference, but keep the raw dict if it fails.
     try:
         validated = LatentStateInference.model_validate(obj).model_dump()
