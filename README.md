@@ -189,6 +189,22 @@ make lint
 make test
 ```
 
+## Publication workflow
+
+Slash commands under `.claude/commands/pub/` drive a structured draft →
+review → revise cycle for the eventual paper. See `.claude/skills/pub/SKILL.md`
+for the state machine and `paper/outline.md` for the working outline.
+
+| Command | Role |
+|---|---|
+| `/pub` | Portfolio status and recommended next action |
+| `/pub-draft` | Interview + literature search + first-draft LaTeX |
+| `/pub-review` | 8-dimension scored review (read-only) |
+| `/pub-revise` | Apply review to produce the next version |
+| `/pub-audit` | Fact-check citations, numbers, equations |
+| `/pub-figures` | Generate missing figure scripts |
+| `/pub-website` | Publish to rjwalters.info (final step) |
+
 ## License
 
 MIT.
